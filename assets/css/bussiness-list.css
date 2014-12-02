@@ -1,0 +1,23 @@
+#wrapper {
+	width: 70%;
+	margin-left: 50px;
+}
+#button-set {
+	overflow: hidden;
+	/*margin: 15px;*/
+	margin-bottom: 15px;
+	margin-left: 0px;
+}
+#button-set button {
+	margin-left: 10px;
+}
+#button-set .button1 {
+	margin-left: 0;
+}
+.button-left {
+	float: left;
+}
+.button-right {
+	float: right;
+}
+

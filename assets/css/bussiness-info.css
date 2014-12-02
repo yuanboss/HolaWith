@@ -1,0 +1,23 @@
+#bussiness-info {
+	overflow: auto;
+}
+#bussiness-info li {
+	font-size: 18px;
+}
+.info-list {
+	width: 45%;
+	margin-left: 5%;
+	float: left;
+}
+.bussinsee-info {
+	width: 95%;
+	margin-left: 5%;
+}
+.bussinsee-info .well {
+	width: 80%;
+}
+
+.ct-chart {
+	width: 80%;
+	height: 300px;
+}
