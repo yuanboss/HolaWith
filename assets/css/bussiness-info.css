@@ -13,11 +13,30 @@
 	width: 95%;
 	margin-left: 5%;
 }
-.bussinsee-info .well {
+.bussinsee-info li {
 	width: 80%;
 }
 
 .ct-chart {
-	width: 80%;
-	height: 300px;
+
+}
+.bussiness-state {
+	overflow: hidden;
+	height: 50px;
+}
+.state {
+	margin-top: 10px;
+	height: 100%;
+	float: left;
+}
+.operate {
+	margin-top: 15px;
+	height: 100%;
+	width: 100px;
+	float: left;
+	margin-left: 20px;
+}
+
+.button-set {
+	padding: 10px;
 }
