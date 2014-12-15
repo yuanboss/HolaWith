@@ -248,13 +248,13 @@
 					<div id="wrapper">
 						<div id="button-set">
 							<div class="button-left">	
-								<button type="button" class="btn btn-primary button1">注销用户</button>
-								<button type="button" class="btn btn-primary">通过审核</button>
-								<button type="button" class="btn btn-primary">拒绝审批</button>
+								<button type="button" class="btn btn-primary button1" id="delete-confirm">注销商家</button>
+								<button type="button" class="btn btn-primary" id="pass-confirm">通过审核</button>
+								<button type="button" class="btn btn-primary" id="refusal-confirm">拒绝审批</button>
 							</div>
 							<div class="button-right">
-								<!-- <button type="button" class="btn btn-primary">导出访问量统计</button> -->
-								<button type="button" class="btn btn-primary">导出用户量统计</button>
+								<button type="button" class="btn btn-primary" id="user-statistics-confirm">导出访问量统计</button>
+								<button type="button" class="btn btn-primary" id="visits-statistics-confirm">导出用户量统计</button>
 							</div>
 						</div>
 						<div id="pagecontent">
@@ -317,16 +317,16 @@
 
 															<td>
 																<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-																	<a class="blue" href="#">
-																		<i class="icon-zoom-in bigger-130"></i>
-																	</a>
-
-																	<a class="green" href="#">
-																		<i class="icon-pencil bigger-130"></i>
-																	</a>
-
-																	<a class="red" href="#">
+																	<a class="red" href="#" title="注销用户">
 																		<i class="icon-trash bigger-130"></i>
+																	</a>
+
+																	<a class="green" href="#" title="通过审核">
+																		<i class="icon-check bigger-130"></i>
+																	</a>
+
+																	<a class="red" href="#" title="拒绝审核">
+																		<i class="icon-lock bigger-130"></i>
 																	</a>
 																</div>
 															</td>
@@ -355,16 +355,16 @@
 
 															<td>
 																<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-																	<a class="blue" href="#">
-																		<i class="icon-zoom-in bigger-130"></i>
-																	</a>
-
-																	<a class="green" href="#">
-																		<i class="icon-pencil bigger-130"></i>
-																	</a>
-
-																	<a class="red" href="#">
+																	<a class="red" href="#" title="注销用户">
 																		<i class="icon-trash bigger-130"></i>
+																	</a>
+
+																	<a class="green" href="#" title="通过审核">
+																		<i class="icon-check bigger-130"></i>
+																	</a>
+
+																	<a class="red" href="#" title="拒绝审核">
+																		<i class="icon-lock bigger-130"></i>
 																	</a>
 																</div>
 															</td>
@@ -392,16 +392,16 @@
 
 															<td>
 																<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-																	<a class="blue" href="#">
-																		<i class="icon-zoom-in bigger-130"></i>
-																	</a>
-
-																	<a class="green" href="#">
-																		<i class="icon-pencil bigger-130"></i>
-																	</a>
-
-																	<a class="red" href="#">
+																	<a class="red" href="#" title="注销用户">
 																		<i class="icon-trash bigger-130"></i>
+																	</a>
+
+																	<a class="green" href="#" title="通过审核">
+																		<i class="icon-check bigger-130"></i>
+																	</a>
+
+																	<a class="red" href="#" title="拒绝审核">
+																		<i class="icon-lock bigger-130"></i>
 																	</a>
 																</div>
 															</td>
@@ -519,6 +519,7 @@
 		  <script src="assets/js/flot/jquery.flot.min.js"></script>
 		  <script src="assets/js/flot/jquery.flot.pie.min.js"></script>
 		  <script src="assets/js/flot/jquery.flot.resize.min.js"></script>
+		  <script src="assets/js/bootbox.min.js"></script>
 
 		  <!-- ace scripts -->
 
@@ -546,7 +547,44 @@
 		  					});
 		  					
 		  				});
-		  			})
+		  			});
+			  		$(function() {
+			  			$("#delete-confirm").on(ace.click_event, function() {
+		  					bootbox.confirm("确定注销所选用户?", function(result) {
+		  						if(result) {
+		  								//
+		  						}
+		  					});
+		  				});
+		  			  	$("#pass-confirm").on(ace.click_event, function() {
+		  					bootbox.confirm("确定注销所选用户?", function(result) {
+		  						if(result) {
+		  								//
+		  						}
+		  					});
+		  				});
+		  				$("#refusal-confirm").on(ace.click_event, function() {
+		  					bootbox.confirm("确定注销所选用户?", function(result) {
+		  						if(result) {
+		  								//
+		  						}
+		  					});
+		  				});
+		  				$("#visits-statistics-confirm").on(ace.click_event, function() {
+		  					bootbox.confirm("确定导出访问量统计?", function(result) {
+		  						if(result) {
+		  								//
+		  						}
+		  					});
+		  				});
+		  				$("#user-statistics-confirm").on(ace.click_event, function() {
+		  					bootbox.confirm("确定导出用户量统计?", function(result) {
+		  						if(result) {
+		  								//
+		  						}
+		  					});
+		  				});
+			  		})
 		  </script>
 		</body>
 		</html>
