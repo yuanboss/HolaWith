@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -181,14 +181,14 @@
 							</a>
 
 							<ul class="submenu">
-								<li class="active">
+								<li>
 									<a href="bussiness-review.html">
 										<i class="icon-double-angle-right"></i>
 										注册申请
 									</a>
 								</li>
 
-								<li>
+								<li class="active">
 									<a href="form-wizard.html">
 										<i class="icon-double-angle-right"></i>
 										攻略发布
@@ -247,12 +247,7 @@
 					<!-- 页面内容 -->
 					<!-- 按钮集合 -->
 					<div id="wrapper">
-						<div id="button-set">
-							<div class="button-left">	
-								<button type="button" class="btn btn-primary button1" id="accept-confirm">通过审核</button>
-								<button type="button" class="btn btn-primary button1" id="refuse-confirm">拒绝审核</button>
-							</div>
-						</div>
+						
 						<div id="pagecontent">
 							<!-- 显示数目 -->
 							<div class="show-number"></div>
@@ -270,21 +265,22 @@
 													<table id="example" class="display" cellspacing="0" width="100%">
 												        <thead>
 												            <tr>
-												            	<th class="center">
-																	<label>
-																		<input type="checkbox" class="ace" />
-																		<span class="lbl"></span>
-																	</label>
-																</th>
-												                <th>商家名称</th>
-												                <th>营业执照</th>
-												                <th>商家id</th>
-												                <th>邮箱</th>
+												                <th>发布者</th>
+												                <th>攻略id</th>
+												                <th>攻略名称</th>
 												                <th>审核状态</th>
+												                <th>操作</th>
 												            </tr>
 												        </thead>
 												    </table>
 											</div>
+											<!-- <div id="button-set">
+												<div class="button-left">
+													<input type="text" id="form-field-1" placeholder="意见">	
+													<button type="button" class="btn btn-primary button1" id="accept-confirm">通过</button>
+													<button type="button" class="btn btn-primary button1" id="refuse-confirm">拒绝</button>
+												</div>
+											</div> -->
 										</div>
 									</div>
 								</div>	
@@ -415,7 +411,8 @@
 
 		    	//插件的配置
 		        $('#example').dataTable( {
-		            "ajax": "/allreview",
+
+		            "ajax": "/alluser",
 		            'oLanguage': {
 		  				'sLengthMenu': '每页显示 _MENU_ 条记录',
 		  				'sZeroRecords': '抱歉， 没有找到',
@@ -432,116 +429,15 @@
 		  			},
 		  		  "sZeroRecords": "没有检索到数据",
 		            "columns": [
-		               { "data": null, render: function ( data, type, row ) {
-		               			return '<label><input type="checkbox" class="ace2" /><span class="lbl"></span></label>'
-			                } 
-			            },
 			            {"data": "name"},
 		                { "data": "license" },
-		                { "data": "email" },
-		                {"data": "id"},
-		                { "data": "status" }
+		                {"data": "email"},
+		                { "data": "status" },
+		                {"data": null, render: function(data) {
+		                	return '<a href="/strategy/get/' + data.license +  '"><button class="btn btn-xs btn-primary" >办理</button></a>'
+		                }}
 		            ]
-		        }).on( 'click', 'input', function () {
-		        	//处理点击表格的多选框选中事件
-		        	var license = $(this).closest('tr').find('td').eq(2).text();
-		        	var index = $(this).closest('tr').index();
-		        	var bussinessData = {
-		        		license: license,
-		        		index: index
-		        	}
-		  	        if ($(this).prop('checked')) {
-		  	        	bussinessId[license] = bussinessData;
-		  	        } else {
-		  	        	delete bussinessId[license];
-		  	        }
-		  	  	});
-	  	  		// 点击出发表格全选事件
-	  	  		$('#example th input:checkbox').on('click' , function(){
-	  	  			var that = this;
-	  	  			$(this).closest('table').find('tr > td:first-child input:checkbox')
-	  	  			.each(function(index){
-	  	  				var license = $(this).closest('tr').find('td').eq(2).text();
-		        		var userIndex = $(this).closest('tr').index();
-		        		
-		        			var bussinessData ={
-		  	  					license: license,
-			        			index: userIndex
-		  	  				}
-		  	  				this.checked = that.checked;
-		  	  				if ($(this).prop('checked')) {
-				  	        	bussinessId[license] = bussinessData;
-				  	        } else {
-				  	        	delete bussinessId[license];
-				  	        }
-		        		
-	  	  			});
-	  	  		});  	
-
-	  	  		function changeBussinessStatus(index, newStatus) {
-	  	  			var $status = $example.find('tr').eq(index + 1).find('td').eq(statusIndex);
-	  	  			$status.text(newStatus);
-	  	  		}
-	  	  		function isEmptyObject(obj){
-				    for(var n in obj){return false} 
-				    return true;
-				}
-	  	  		$("#accept-confirm").on(ace.click_event, function() {
-	  	  			var isEmpty = isEmptyObject(bussinessId);
-	  	  			if (!isEmpty) {
-	  	  				// console.log(bussinessId);
-		  	  			bootbox.confirm("确定通过审核?", function(result) {
-		  	  				if(result) {
-		  	  					for(id in bussinessId) {
-		  	  						data = {
-		  	  							id: bussinessId[id].license
-		  	  						}
-		  	  						index = bussinessId[id].index;
-
-		  	  						url = '/' + id + '/accept';
-		  	  						if (id != "") {
-		  	  							$.ajax({
-			  	  							type: "POST",
-			  	  							url: url,
-			  	  							success: function(data) {
-			  	  								(function(userindex) {
-			  	  									changeBussinessStatus(userindex, "已审核")
-			  	  								})(index);
-			  	  							}
-			  	  						})
-		  	  						}
-		  	  					}
-		  	  				}
-		  	  			});
-	  	  			} else {
-	  	  				alert('请选择相应的用户');
-	  	  			}
-	  	  		});
-	  	  		$("#refuse-confirm").on(ace.click_event, function() {
-	  	  			var isEmpty = isEmptyObject(bussinessId);
-	  	  			if (!isEmpty) {
-		  	  			bootbox.confirm("确定拒绝审核?", function(result) {
-		  	  				if(result) {
-		  	  					for(id in bussinessId) {
-		  	  						data = {
-		  	  							id: bussinessId[id].license
-		  	  						}
-		  	  						index = bussinessId[id].index;
-		  	  						url = '/' + id + '/refuse';
-		  	  						$.ajax({
-		  	  							type: "POST",
-		  	  							url: url,
-		  	  							success: function(data) {
-		  	  								changeBussinessStatus(index, "已拒绝")
-		  	  							}
-		  	  						})
-		  	  					}
-		  	  				}
-		  	  			});
-	  	  			} else {
-	  	  				alert('请选择相应的用户');
-	  	  			}
-	  	  		});
+		        })
 		    });
 		    </script>
 		</body>

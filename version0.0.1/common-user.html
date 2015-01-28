@@ -122,7 +122,7 @@
 
 					<!-- 菜单栏 -->
 					<ul class="nav nav-list">
-						<li>
+						<li class="active open">
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-desktop"></i>
 								<span class="menu-text"> 用户管理 </span>
@@ -138,7 +138,7 @@
 									</a>
 								</li>
 
-								<li>
+								<li class="active">
 									<a href="common-user.html">
 										<i class="icon-double-angle-right"></i>
 										普通用户
@@ -172,7 +172,7 @@
 							</ul>
 						</li>
 
-						<li class="active open">
+						<li>
 							<a href="#" class="dropdown-toggle">
 								<i class="icon-edit"></i>
 								<span class="menu-text"> 业务审核 </span>
@@ -181,7 +181,7 @@
 							</a>
 
 							<ul class="submenu">
-								<li class="active">
+								<li>
 									<a href="bussiness-review.html">
 										<i class="icon-double-angle-right"></i>
 										注册申请
@@ -249,8 +249,7 @@
 					<div id="wrapper">
 						<div id="button-set">
 							<div class="button-left">	
-								<button type="button" class="btn btn-primary button1" id="accept-confirm">通过审核</button>
-								<button type="button" class="btn btn-primary button1" id="refuse-confirm">拒绝审核</button>
+								<button type="button" class="btn btn-primary button1" id="delete-confirm">注销</button>
 							</div>
 						</div>
 						<div id="pagecontent">
@@ -276,9 +275,8 @@
 																		<span class="lbl"></span>
 																	</label>
 																</th>
-												                <th>商家名称</th>
+												                <th>商家名</th>
 												                <th>营业执照</th>
-												                <th>商家id</th>
 												                <th>邮箱</th>
 												                <th>审核状态</th>
 												            </tr>
@@ -410,12 +408,12 @@
 		    $(document).ready(function() {
 		    	//初始化声明一些变量
 		    	var $example = $('#example');   //展示数据的表格
-		    	var statusIndex = 5; 		//标识审核状态在哪一列
+		    	var statusIndex = 4; 		//标识审核状态在哪一列
 		    	var bussinessId = {};		//用于存储需要注销的商户的信息
 
 		    	//插件的配置
 		        $('#example').dataTable( {
-		            "ajax": "/allreview",
+		            "ajax": "/alluser",
 		            'oLanguage': {
 		  				'sLengthMenu': '每页显示 _MENU_ 条记录',
 		  				'sZeroRecords': '抱歉， 没有找到',
@@ -439,9 +437,8 @@
 			            {"data": "name"},
 		                { "data": "license" },
 		                { "data": "email" },
-		                {"data": "id"},
-		                { "data": "status" }
-		            ]
+		                { "data": "status" },
+		            ],
 		        }).on( 'click', 'input', function () {
 		        	//处理点击表格的多选框选中事件
 		        	var license = $(this).closest('tr').find('td').eq(2).text();
@@ -460,21 +457,8 @@
 	  	  		$('#example th input:checkbox').on('click' , function(){
 	  	  			var that = this;
 	  	  			$(this).closest('table').find('tr > td:first-child input:checkbox')
-	  	  			.each(function(index){
-	  	  				var license = $(this).closest('tr').find('td').eq(2).text();
-		        		var userIndex = $(this).closest('tr').index();
-		        		
-		        			var bussinessData ={
-		  	  					license: license,
-			        			index: userIndex
-		  	  				}
-		  	  				this.checked = that.checked;
-		  	  				if ($(this).prop('checked')) {
-				  	        	bussinessId[license] = bussinessData;
-				  	        } else {
-				  	        	delete bussinessId[license];
-				  	        }
-		        		
+	  	  			.each(function(){
+	  	  				this.checked = that.checked;
 	  	  			});
 	  	  		});  	
 
@@ -484,63 +468,53 @@
 	  	  		}
 	  	  		function isEmptyObject(obj){
 				    for(var n in obj){return false} 
-				    return true;
+				    return true; 
 				}
-	  	  		$("#accept-confirm").on(ace.click_event, function() {
-	  	  			var isEmpty = isEmptyObject(bussinessId);
-	  	  			if (!isEmpty) {
-	  	  				// console.log(bussinessId);
-		  	  			bootbox.confirm("确定通过审核?", function(result) {
+	  	  		//注销一个或者多个商家
+	  	  	  	$("#delete-confirm").on(ace.click_event, function() {
+	  	  	  		var isEmpty = isEmptyObject(bussinessId);
+	  	  	  		if (!isEmpty) {
+		  	  			bootbox.confirm("确定注销所选商家?", function(result) {
 		  	  				if(result) {
-		  	  					for(id in bussinessId) {
-		  	  						data = {
-		  	  							id: bussinessId[id].license
-		  	  						}
-		  	  						index = bussinessId[id].index;
-
-		  	  						url = '/' + id + '/accept';
-		  	  						if (id != "") {
-		  	  							$.ajax({
-			  	  							type: "POST",
-			  	  							url: url,
-			  	  							success: function(data) {
-			  	  								(function(userindex) {
-			  	  									changeBussinessStatus(userindex, "已审核")
-			  	  								})(index);
-			  	  							}
-			  	  						})
-		  	  						}
-		  	  					}
+	  	  						for(id in bussinessId) {
+	  	  							//传给后台的数据暂时只有商家的license
+	  	  							data = {
+	  	  								id: bussinessId[id].license
+	  	  							}
+	  	  							index = bussinessId[id].index;
+	  	  							//此处为API接口
+	  	  							url = '/' + id + '/delete'
+	  	  							$.ajax({
+	  	  								type: "POST",
+	  	  								data: data,
+	  	  								url: url,
+	  	  								//后台返回给前端的数据应该只是一个标识，标明后台处理成功，而前端则应该动态将该商家的状态改成已注销
+	  	  								success: function(data) {
+	  	  									if (data === "success") {
+	  	  										changeBussinessStatus(index, "已注销");
+	  	  									}
+	  	  								}
+	  	  							})
+	  	  						}
 		  	  				}
 		  	  			});
-	  	  			} else {
-	  	  				alert('请选择相应的用户');
-	  	  			}
+	  	  	  		} else {
+	  	  	  			alert("请选择")
+	  	  	  		}
 	  	  		});
-	  	  		$("#refuse-confirm").on(ace.click_event, function() {
-	  	  			var isEmpty = isEmptyObject(bussinessId);
-	  	  			if (!isEmpty) {
-		  	  			bootbox.confirm("确定拒绝审核?", function(result) {
-		  	  				if(result) {
-		  	  					for(id in bussinessId) {
-		  	  						data = {
-		  	  							id: bussinessId[id].license
-		  	  						}
-		  	  						index = bussinessId[id].index;
-		  	  						url = '/' + id + '/refuse';
-		  	  						$.ajax({
-		  	  							type: "POST",
-		  	  							url: url,
-		  	  							success: function(data) {
-		  	  								changeBussinessStatus(index, "已拒绝")
-		  	  							}
-		  	  						})
-		  	  					}
-		  	  				}
-		  	  			});
-	  	  			} else {
-	  	  				alert('请选择相应的用户');
-	  	  			}
+	  	  		$("#visits-statistics-confirm").on(ace.click_event, function() {
+	  	  			bootbox.confirm("确定导出访问量统计?", function(result) {
+	  	  				if(result) {
+	  	  						
+	  	  				}
+	  	  			});
+	  	  		});
+	  	  		$("#user-statistics-confirm").on(ace.click_event, function() {
+	  	  			bootbox.confirm("确定导出用户量统计?", function(result) {
+	  	  				if(result) {
+	  	  						//
+	  	  				}
+	  	  			});
 	  	  		});
 		    });
 		    </script>
